@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  gwyn-app:
+    container_name: gwyn
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "4000:4000"
+    expose:
+      - '4000'
+    volumes:
+      - ./frontend/asset:/go/bin/frontend/asset
+    networks: 
+      - labalaba
+    environment:
+      - APP_NAME=gwyn
+      - APP_VERSION=1.0.0
+      - MODE=dev
+      - PORT=4000
+      - HOST=localhost:4000
+      - DOMAIN=http://localhost:4000
+      - WS=ws://localhost:4000
+      - DB_USER=postgres
+      - DB_PASSWORD=0
+      - DB_HOST=dbgwyn
+      - DB_NAME=postgres
+      - DB_PORT=5435
+      - TIMEZONE=Asia/Bangkok
+      - SSL_MODE=disable
+    depends_on:
+      - pgsql
+
+  pgsql:
+    container_name: dbgwyn
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=gwyn
+    ports:
+      - '5435:5435'
+    volumes: 
+      - dpgsql:/var/lib/postgresql/data
+    networks: 
+      - labalaba
+
+networks:
+  labalaba:
+    name: labalaba
+    driver: bridge
+
+volumes:
+  dpgsql:
+    driver: local

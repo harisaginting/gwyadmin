@@ -1,0 +1,109 @@
+definitions:
+  response.Message:
+    properties:
+      message:
+        type: string
+    type: object
+  shorten.RequestCreate:
+    properties:
+      shortcode:
+        type: string
+      url:
+        type: string
+    type: object
+  shorten.ResponseCreate:
+    properties:
+      shortcode:
+        type: string
+    type: object
+  shorten.ResponseList:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/shorten.Shorten'
+        type: array
+      total:
+        type: integer
+    type: object
+  shorten.Shorten:
+    properties:
+      id:
+        type: integer
+      lastSeenDate:
+        type: string
+      redirectCount:
+        type: integer
+      shortcode:
+        type: string
+      startDate:
+        type: string
+      url:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /{code}:
+    get:
+      description: create shorten url and get shortcode
+      parameters:
+      - description: payload create shorten url
+        in: body
+        name: bodyRequest
+        required: true
+        schema:
+          $ref: '#/definitions/shorten.RequestCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: success
+          schema:
+            $ref: '#/definitions/shorten.ResponseCreate'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/response.Message'
+        "409":
+          description: shortcode already used or not available
+          schema:
+            $ref: '#/definitions/response.Message'
+        "422":
+          description: shortcode format is invalid
+          schema:
+            $ref: '#/definitions/response.Message'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/response.Message'
+      summary: create shortcode
+      tags:
+      - shorten
+  /{code}/status:
+    get:
+      description: get status shortcode and redirect count
+      parameters:
+      - description: shortcode url
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success get shortcode status
+          schema:
+            $ref: '#/definitions/shorten.ResponseList'
+        "404":
+          description: shotcode not found
+          schema:
+            $ref: '#/definitions/response.Message'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/response.Message'
+      summary: check status shortcode
+      tags:
+      - shorten
+swagger: "2.0"

@@ -1,0 +1,18 @@
+with-expecter: True
+packages:
+  github.com/harisaginting/gwyn/services:
+    config:
+      filename: "mock_{{.InterfaceName}}.go"
+      dir: "./services/mocks"
+      mockname: "Mock{{.InterfaceName}}"
+      outpkg: "mocks"
+    interfaces:
+      ShortenService:
+  github.com/harisaginting/gwyn/repositories:
+    config:
+      filename: "mock_{{.InterfaceName}}.go"
+      dir: "./repositories/mocks"
+      mockname: "Mock{{.InterfaceName}}"
+      outpkg: "mocks"
+    interfaces:
+      ShortenRepository:
